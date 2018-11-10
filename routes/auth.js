@@ -60,8 +60,9 @@ api.post('/login', (req, res) => {
     },
     (err, user, message) => {
       if (err) {
-        res.status(400).res.json({ err });
+        res.status(400).res.json({ err: err.message });
       }
+      console.log(req.body);
       const { uuid, email, nickname } = user.toJSON();
 
       const payload = { uuid: user.uuid, nickname, email };

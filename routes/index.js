@@ -14,6 +14,6 @@ api.get('/', (req, res) => {
 
 api.use('/users', passport.authenticate('jwt', { session: false }), users);
 api.use('/auth', auth);
-api.use('/buckets', buckets);
+api.use('/users/:uuid/buckets', passport.authenticate('jwt', { session: false }), buckets);
 
 export default api;
