@@ -28,7 +28,7 @@ api.post('/', (req, res) => {
         console.log("file desn't exists");
       } else {
         // Implement your own logic if needed. Like moving the file, renaming the file, etc.
-        console.log('coucou');
+        console.log('good file');
       }
     });
     // console.log(req.file);
