@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import passport from 'passport';
+import morgan from 'morgan';
 import mLog from './lib/utils';
 import { db as database } from './models';
 import routes from './routes';
@@ -15,13 +16,14 @@ const app = express();
 
 app.use(passport.initialize());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(morgan('dev'));
 
 const start = async () => {
   try {
     await database.authenticate();
     if (process.env.APP === 'development') {
-      database.sync({ force: false });
+      await database.sync({ force: false });
     }
 
     app.use('/api', routes);

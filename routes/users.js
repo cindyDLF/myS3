@@ -1,8 +1,26 @@
 import { Router } from 'express';
 import { pick } from 'lodash';
+import fs from 'fs';
 import User from '../models/user';
+import Buckets from '../models/bucket';
 
 const api = Router();
+
+function deleteFolderRecursive(path) {
+  if (fs.existsSync(path)) {
+    fs.readdirSync(path).forEach((file, index) => {
+      const curPath = `${path}/${file}`;
+      if (fs.statSync(curPath).isDirectory()) {
+        // recurse
+        deleteFolderRecursive(curPath);
+      } else {
+        // delete file
+        fs.unlinkSync(curPath);
+      }
+    });
+    fs.rmdirSync(path);
+  }
+}
 
 api.get('/', async (req, res) => {
   try {
@@ -39,8 +57,15 @@ api.put('/:uuid', async (req, res) => {
 api.delete('/:uuid', async (req, res) => {
   try {
     const user = await User.findOne({ where: { uuid: req.params.uuid } });
-    await user.destroy();
-    res.status(204).send();
+    console.log(user);
+    if (user) {
+      deleteFolderRecursive(`/opt/workspace/myS3/${req.params.uuid}`);
+      Buckets.destroy({ where: { user_uuid: req.params.uuid } });
+      await user.destroy();
+      await res.status(204).send();
+    } else {
+      res.status(400).json({ err: "user doesn't exist" });
+    }
   } catch (err) {
     res.status(400).json({ err: err.message });
   }

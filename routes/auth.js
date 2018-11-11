@@ -43,7 +43,7 @@ api.post('/register', async (req, res) => {
         console.log(err);
       }
     } else {
-      fs.mkdirSync(`/opt/workspace/myS3/${user.uuid}`);
+      fs.mkdirSync(`/opt/workspace/myS3/${user.uuid}`, '0777');
     }
 
     res.status(201).json({ data: { user }, meta: { token } });
@@ -83,4 +83,4 @@ api.post('/login', (req, res) => {
 
 export default api;
 
-// chmod 777 opt
+// chmod 777 be16fc15-dc96-449b-9e08-24b989b
